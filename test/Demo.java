@@ -43,14 +43,6 @@ public class Demo {
                 colorBox = Blue;
             }
 
-            setFilled(false);
-            setColor(White);
-            rectangle(50, 50, 400, 400);
-            arc(0, 0, 100, 100, 270, 90);
-            arc(350, 0, 100, 100, 180, 90);
-            arc(350, 350, 100, 100, 90, 90);
-            arc(0, 350, 100, 100, 0, 90);
-
             setFilled(true);
             setColor(80, colorBox);
             rectangle(boxL, boxT, boxR, boxB);
