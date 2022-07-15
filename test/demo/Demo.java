@@ -1,7 +1,5 @@
 package test.demo;
 
-import graphics.Graphics;
-
 import java.awt.*;
 
 import static graphics.Graphics.*;
