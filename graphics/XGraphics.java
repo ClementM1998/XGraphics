@@ -25,6 +25,7 @@ public class Graphics {
     private static int fontSize = 12;
     private static double scalex = 1.2;
     private static double scaley = 1.2;
+
     private static Drawing drawing;
     private static Graphics2D graphics;
 
@@ -194,5 +195,712 @@ public class Graphics {
     public static final int VK_ALT_GRAPH = KeyEvent.VK_ALT_GRAPH;
     public static final int VK_BEGIN = KeyEvent.VK_BEGIN;
     public static final int VK_UNDEFINED = KeyEvent.VK_UNDEFINED;
-    
+
+    protected Graphics() {}
+
+    // create window
+
+    public static void createWindow(String title) {
+        createWindow(title, screenWidth, screenHeight);
+    }
+
+    public static void createWindow(int width, int height) {
+        createWindow("Graphics", width, height);
+    }
+
+    public static void createWindow(String title, int width, int height) {
+        createWindow(title, 0, 0, width, height);
+    }
+
+    public static void createWindow(int posx, int posy, int width, int height) {
+        createWindow("Graphics", posx, posy, width, height);
+    }
+
+    public static void createWindow(String title, int posx, int posy, int width, int height) {
+        Graphics.title = title;
+        Graphics.posx = posx;
+        Graphics.posy = posy;
+        Graphics.width = width;
+        Graphics.height = height;
+
+        initWindow();
+    }
+
+    private static void initWindow() {
+        window.setTitle(title);
+        window.setSize(width, height);
+        window.setLocation(posx, posy);
+        window.setResizable(false);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        drawing = new Drawing(width, height);
+        window.setContentPane(panel);
+        window.add(drawing);
+
+        // handle key, mouse, mousemotion
+        window.addKeyListener(drawing);
+        window.addMouseListener(drawing);
+        window.addMouseMotionListener(drawing);
+
+        graphics = drawing.getGraphics();
+
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+    }
+
+    public static int getScreenWidth() {
+        return window.getWidth();
+    }
+
+    public static int getScreenHeight() {
+        return window.getHeight();
+    }
+
+    public static void delay(long msec) {
+        try {
+            Thread.sleep(msec);
+        } catch (InterruptedException e) {}
+    }
+
+    public static void closeWindow() {
+        if (window != null) System.exit(0);
+        else System.exit(1);
+    }
+
+    public static void setBackColor(int red, int green, int blue) {
+        Color color = new Color(red, green, blue);
+        setBackColor(color);
+    }
+
+    public static void setBackColor(Color color) {
+        Graphics.backColor = color;
+        graphics.setColor(backColor);
+        graphics.fillRect(0, 0, width, height);
+    }
+
+    public static void setScale(double s) {
+        setScale(s, s);
+    }
+
+    public static void setScale(double sx, double sy) {
+        Graphics.scalex = sx;
+        Graphics.scaley = sy;
+    }
+
+    public static void clearWindow() {
+        graphics.setColor(backColor);
+        graphics.fillRect(0, 0, width, height);
+    }
+
+    public static void refreshWindow() {
+        window.repaint();
+    }
+
+    // draw graphics
+
+    public static void setAntialias(boolean antialias) {
+        Graphics.antialias = antialias;
+    }
+
+    public static void setStroke(float weight) {
+        Graphics.stroke = weight;
+    }
+
+    public static void setColor(int alpha, int red, int green, int blue) {
+        Color color = new Color(red, green, blue, alpha);
+        setColor(color);
+    }
+
+    public static void setColor(int red, int green, int blue) {
+        Color color = new Color(red, green, blue);
+        setColor(color);
+    }
+
+    public static void setColor(Color color) {
+        Graphics.color = color;
+    }
+
+    public static void setColor(int alpha, Color color) {
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+        setColor(new Color(r, g, b, alpha));
+    }
+
+    public static void setFilled(boolean filled) {
+        Graphics.filled = filled;
+    }
+
+    public static void setFontName(String name) {
+        if (name == null || name.equals("")) name = "Courier New";
+        Graphics.fontName = name;
+    }
+
+    public static void setFontStyle(int style) {
+        Graphics.fontStyle = style;
+    }
+
+    public static void setFontSize(int size) {
+        Graphics.fontSize = size;
+    }
+
+    public static void arc(int x, int y, int width, int height, int startangle, int sweepangle) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        if (Graphics.filled) {
+            graphics.fillArc(x, y, width, height, startangle, sweepangle);
+        } else {
+            graphics.drawArc(x, y, width, height, startangle, sweepangle);
+        }
+        window.repaint();
+    }
+
+    public static void circle(int x, int y, int radius) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        if (Graphics.filled) {
+            graphics.fillOval(x, y, radius, radius);
+        } else {
+            graphics.drawOval(x, y, radius, radius);
+        }
+        window.repaint();
+    }
+
+    public static void point(int x, int y) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        graphics.drawLine(x, y, x, y);
+        window.repaint();
+    }
+
+    public static void line(int x1, int y1, int x2, int y2) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        graphics.drawLine(x1, y1, x2, y2);
+        window.repaint();
+    }
+
+    public static void rectangle(int x, int y, int width, int height) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        int[] xpoint = new int[] {x, width, width, x, x};
+        int[] ypoint = new int[] {y, y, height, height, y};
+        if (Graphics.filled) {
+            polygon(xpoint, ypoint);
+            //graphics.fillRect(x, y, width, height);
+        } else {
+            polyline(xpoint, ypoint);
+            //graphics.drawRect(x, y, width, height);
+        }
+        window.repaint();
+    }
+
+    public static void triangle(int x1, int y1, int x2, int y2, int x3, int y3) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        int[] xpoint = new int[] {x1, x2, x3};
+        int[] ypoint = new int[] {y1, y2, y2};
+        if (Graphics.filled) {
+            polygon(xpoint, ypoint);
+        } else {
+            polygon(xpoint, ypoint);
+        }
+    }
+
+    public static void oval(int x, int y, int width, int height) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        if (Graphics.filled) {
+            graphics.fillOval(x, y, width, height);
+        } else {
+            graphics.drawOval(x, y, width, height);
+        }
+    }
+
+    public static void square(int x, int y, int size) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        if (Graphics.filled) {
+            graphics.fillRect(x, y, size, size);
+        } else {
+            graphics.drawRect(x, y, size, size);
+        }
+        window.repaint();
+    }
+
+    public static void polygon(int[] xpoints, int[] ypoints) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        if (xpoints.length != ypoints.length) throw new IndexOutOfBoundsException("x point and y point must have a same size");
+        int npoint = xpoints.length;
+        graphics.setColor(color);
+        if (Graphics.filled) {
+            graphics.fillPolygon(xpoints, ypoints, npoint);
+        } else {
+            graphics.drawPolygon(xpoints, ypoints, npoint);
+        }
+        window.repaint();
+    }
+
+    public static void polyline(int[] xpoints, int[] ypoints) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        if (xpoints.length != ypoints.length) throw new IndexOutOfBoundsException("x point and y point must have a same size");
+        int npoint = xpoints.length;
+        graphics.setColor(color);
+        graphics.drawPolyline(xpoints, ypoints, npoint);
+        window.repaint();
+    }
+
+    public static void text(String text, int x, int y) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        Font font = new Font(fontName, fontStyle, fontSize);
+        graphics.setFont(font);
+        graphics.setColor(color);
+
+        FontMetrics fm = graphics.getFontMetrics();
+        graphics.drawString(text, x, (y + fm.getAscent()));
+        window.repaint();
+    }
+
+    public static void image(Image image, int x, int y) {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+
+        window.repaint();
+    }
+
+    private static RenderingHints getRendering(boolean b) {
+        RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        if (b) {
+            hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        } else {
+            hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        }
+        return hints;
+    }
+
+    public static boolean ismouse_button() {
+        return drawing.mouse_button;
+    }
+
+    public static boolean ismouse_available() {
+        return drawing.mouse_available;
+    }
+
+    public static boolean ismouse_move() {
+        return drawing.mouse_moved;
+    }
+
+    public static boolean ismouse_dragged() {
+        return drawing.mouse_dragged;
+    }
+
+    public static Point getMousePos() {
+        return drawing.mousePos;
+    }
+
+    public static int mousex() {
+        return getMousePos().x;
+    }
+
+    public static int mousey() {
+        return getMousePos().y;
+    }
+
+    public static boolean iskey_down() {
+        return drawing.key_down;
+    }
+
+    public static boolean iskey_up() {
+        return drawing.key_up;
+    }
+
+    /*
+    public static char getKeyChar() {
+        return drawing.getKeyChar();
+    }
+     */
+
+    public static int getKeyCode() {
+        return drawing.getKeyCode();
+    }
+
+    public static String getKeyText() {
+        return drawing.getKeyText();
+    }
+
+    public static boolean isKey(char key) {
+        return drawing.isKey((int) key);
+    }
+
+    public static boolean isKey(int code) {
+        return drawing.isKey(code);
+    }
+
+    public static boolean isPopupTrigger() {
+        return drawing.isPopupTrigger;
+    }
+
+    public static boolean isActionKey() {
+        return drawing.isActionKey;
+    }
+
+    public static boolean isAltDown() {
+        return drawing.isAltDown;
+    }
+
+    public static boolean isAltGraphDown() {
+        return drawing.isAltGraphDown;
+    }
+
+    public static boolean isConsumed() {
+        return drawing.isConsumed;
+    }
+
+    public static boolean isControlDown() {
+        return drawing.isControlDown;
+    }
+
+    public static boolean isMetaDown() {
+        return drawing.isMetaDown;
+    }
+
+    public static boolean isShiftDown() {
+        return drawing.isShiftDown;
+    }
+
+    public static void translate(double x, double y) {
+        graphics.translate(x, y);
+    }
+
+    public static void rotate(double rotate) {
+        graphics.rotate(rotate);
+    }
+
+    private static GeneralPath path = null;
+
+    public static void createPath() {
+        if (path == null) path = new GeneralPath();
+    }
+
+    public static void moveTo(double x, double y) {
+        if (path == null) throw new NullPointerException("path is null");
+        path.moveTo(x, y);
+    }
+
+    public static void lineTo(double x, double y) {
+        if (path == null) throw new NullPointerException("path is null");
+        path.lineTo(x, y);
+    }
+
+    public static void quadTo(double x1, double y1, double x2, double y2) {
+        if (path == null) throw new NullPointerException("path is null");
+        path.quadTo(x1, y1, x2, y2);
+    }
+
+    public static void curveTo(double x1, double y1, double x2, double y2, double x3, double y3) {
+        if (path == null) throw new NullPointerException("path is null");
+        path.curveTo(x1, y1, x2, y2, x3, y3);
+    }
+
+    public static void closePath() {
+        if (path == null) throw new NullPointerException("path is null");
+        path.closePath();
+    }
+
+    public static void drawPath() {
+        graphics.setRenderingHints(getRendering(antialias));
+        graphics.setStroke(new BasicStroke(stroke));
+        graphics.setColor(color);
+        graphics.draw(path);
+        window.repaint();
+    }
+
+    static class Drawing extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
+        private Dimension size;
+        private Graphics2D graphics;
+        private BufferedImage image;
+        private Point mousePos = new Point();
+        private int keyCode = 0;
+        //private char keyChar = '\0';
+
+        /* mousePressed > mouseReleased > mouseClicked */
+        public boolean mouse_button = false;
+
+        /* mouseEntered > mouseExited */
+        public boolean mouse_available = false;
+
+        public boolean mouse_dragged = false;
+        public boolean mouse_moved = false;
+
+        /* keyPressed > keyTyped > keyReleased */
+        public boolean key_down = false;
+        public boolean key_up = false;
+
+        /*
+         * // in mouse handle
+         * e.isPopupTrigger();
+         *
+         * // in key handle
+         *
+         * e.isActionKey();
+         *
+         * // standard is
+         * e.isAltDown();
+         * e.isAltGraphDown();
+         * e.isConsumed();
+         * e.isControlDown();
+         * e.isMetaDown();
+         * e.isShiftDown();
+         */
+
+        public boolean isPopupTrigger = false;
+        public boolean isActionKey = false;
+
+        public boolean isAltDown = false;
+        public boolean isAltGraphDown = false;
+        public boolean isConsumed = false;
+        public boolean isControlDown = false;
+        public boolean isMetaDown = false;
+        public boolean isShiftDown = false;
+
+        public Drawing(int width, int height) {
+            size = new Dimension(width, height);
+            setPreferredSize(size);
+            setMaximumSize(size);
+            setMinimumSize(size);
+
+            setFocusable(true);
+            addKeyListener(this);
+            addMouseListener(this);
+            addMouseMotionListener(this);
+
+            image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            graphics = (Graphics2D) image.getGraphics();
+            graphics.setRenderingHints(getRendering(true));
+        }
+
+        @Override
+        public void paint(java.awt.Graphics g) {
+            super.paint(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHints(getRendering(true));
+            g2.drawImage(image, 0, 0, null);
+        }
+
+        public Dimension getSize() {
+            return size;
+        }
+
+        public Graphics2D getGraphics() {
+            return graphics;
+        }
+
+        public Point getMousePosition() {
+            return mousePos;
+        }
+
+        /*
+        public char getKeyChar() {
+            return keyChar;
+        }
+         */
+
+        public int getKeyCode() {
+            return keyCode;
+        }
+
+        /*
+        public boolean isKey(char key) {
+            return getKeyChar() == key;
+        }
+         */
+
+        public boolean isKey(int code) {
+            return getKeyCode() == code;
+        }
+
+        public String getKeyText() {
+            return KeyEvent.getKeyText(getKeyCode());
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            mouse_button = false;
+            //System.out.println("mouseClicked: " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            mouse_button = true;
+            //System.out.println("mousePressed: " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            mouse_button = true;
+            //System.out.println("mouseReleased: " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            mouse_available = true;
+            //System.out.println("mouseEntered: " + mouse_available + " : " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            mouse_available = false;
+            mouse_moved = false;
+            //System.out.println("mouseExited: " + mouse_available + " : " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            mouse_dragged = true;
+            //System.out.println("mouseDragged: " + mouse_dragged + " : " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            mouse_moved = true;
+            //System.out.println("mouseMoved: " + mouse_moved + " : " + e.getX() + "," + e.getY());
+            mousePos.x = e.getX();
+            mousePos.y = e.getY();
+            isPopupTrigger = e.isPopupTrigger();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            /*
+            key_down = true;
+            key_up = false;
+            System.out.println("keyTyped: " + e.getKeyChar());
+            keyCode = e.getKeyCode();
+            //keyChar = e.getKeyChar();
+            isActionKey = e.isActionKey();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+             */
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            key_down = true;
+            key_up = false;
+            //System.out.println("keyPressed: " + e.getKeyChar());
+            keyCode = e.getKeyCode();
+            //keyChar = e.getKeyChar();
+            isActionKey = e.isActionKey();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            key_down = false;
+            key_up = true;
+            //System.out.println("keyReleased: " + e.getKeyChar());
+            keyCode = 0;
+            //keyChar = e.getKeyChar();
+            isActionKey = e.isActionKey();
+
+            isAltDown = e.isAltDown();
+            isAltGraphDown = e.isAltGraphDown();
+            isConsumed = e.isConsumed();
+            isControlDown = e.isControlDown();
+            isMetaDown = e.isMetaDown();
+            isShiftDown = e.isShiftDown();
+        }
+    }
+
 }
