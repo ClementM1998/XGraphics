@@ -3,7 +3,8 @@ package graphics;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
+import java.util.Random;
 import javax.swing.*;
 
 public class Graphics {
@@ -25,6 +26,13 @@ public class Graphics {
     private static int fontSize = 12;
     private static double scalex = 1.2;
     private static double scaley = 1.2;
+
+    public static final int Plain = Font.PLAIN;
+    public static final int Bold = Font.BOLD;
+    public static final int ITALIC = Font.ITALIC;
+    public static final int RomanBaseline = Font.ROMAN_BASELINE;
+    public static final int CenterBaseline = Font.CENTER_BASELINE;
+    public static final int HangingBaseline = Font.HANGING_BASELINE;
 
     private static Drawing drawing;
     private static Graphics2D graphics;
@@ -228,7 +236,7 @@ public class Graphics {
 
     private static void initWindow() {
         window.setTitle(title);
-        window.setSize(width, height);
+        //window.setSize(width, height);
         window.setLocation(posx, posy);
         window.setResizable(false);
 
@@ -244,6 +252,7 @@ public class Graphics {
 
         graphics = drawing.getGraphics();
 
+        window.pack();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
     }
@@ -260,6 +269,14 @@ public class Graphics {
         try {
             Thread.sleep(msec);
         } catch (InterruptedException e) {}
+    }
+
+    public static int random() {
+        return new Random().nextInt();
+    }
+
+    public static int random(int bounds) {
+        return new Random().nextInt(bounds);
     }
 
     public static void closeWindow() {
@@ -320,6 +337,10 @@ public class Graphics {
         Graphics.color = color;
     }
 
+    public static Color createColor(int red, int green, int blue) {
+        return new Color(red, green, blue);
+    }
+
     public static void setColor(int alpha, Color color) {
         int r = color.getRed();
         int g = color.getGreen();
@@ -329,6 +350,12 @@ public class Graphics {
 
     public static void setFilled(boolean filled) {
         Graphics.filled = filled;
+    }
+
+    public static void setFont(String name, int style, int size) {
+        setFontName(name);
+        setFontStyle(style);
+        setFontSize(size);
     }
 
     public static void setFontName(String name) {
@@ -342,6 +369,18 @@ public class Graphics {
 
     public static void setFontSize(int size) {
         Graphics.fontSize = size;
+    }
+
+    public static Font getFont() {
+        return graphics.getFont();
+    }
+
+    public static FontMetrics getFontMetrics() {
+        return getFontMetrics(getFont());
+    }
+
+    public static FontMetrics getFontMetrics(Font font) {
+        return graphics.getFontMetrics(font);
     }
 
     public static void arc(int x, int y, int width, int height, int startangle, int sweepangle) {
@@ -391,11 +430,11 @@ public class Graphics {
         int[] xpoint = new int[] {x, width, width, x, x};
         int[] ypoint = new int[] {y, y, height, height, y};
         if (Graphics.filled) {
-            polygon(xpoint, ypoint);
-            //graphics.fillRect(x, y, width, height);
+            //polygon(xpoint, ypoint);
+            graphics.fillRect(x, y, width, height);
         } else {
-            polyline(xpoint, ypoint);
-            //graphics.drawRect(x, y, width, height);
+            //polyline(xpoint, ypoint);
+            graphics.drawRect(x, y, width, height);
         }
         window.repaint();
     }
@@ -413,7 +452,7 @@ public class Graphics {
         }
     }
 
-    public static void oval(int x, int y, int width, int height) {
+    public static void ellipse(int x, int y, int width, int height) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
         graphics.setColor(color);
@@ -472,10 +511,15 @@ public class Graphics {
         window.repaint();
     }
 
-    public static void image(Image image, int x, int y) {
-        graphics.setRenderingHints(getRendering(antialias));
-        graphics.setStroke(new BasicStroke(stroke));
+    public static void image(String res, int x, int y) {
+        ImageIcon image = new ImageIcon(res);
+        graphics.drawImage(image.getImage(), x, y, null);
+        window.repaint();
+    }
 
+    public static void image(String res, int x, int y, int w, int h) {
+        ImageIcon image = new ImageIcon(res);
+        graphics.drawImage(image.getImage(), x, y, w, h, null);
         window.repaint();
     }
 
@@ -583,6 +627,10 @@ public class Graphics {
 
     public static void translate(double x, double y) {
         graphics.translate(x, y);
+    }
+
+    public static void shear(double shx, double shy) {
+        graphics.shear(shx, shy);
     }
 
     public static void rotate(double rotate) {
