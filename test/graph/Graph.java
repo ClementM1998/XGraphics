@@ -19,10 +19,10 @@ public class Graph {
         rectangle(130, 30, 100, 80);
 
         setFilled(false);
-        oval(30, 130, 50, 60);
+        ellipse(30, 130, 50, 60);
 
         setFilled(true);
-        oval(130, 130, 50, 60);
+        ellipse(130, 130, 50, 60);
 
         setFilled(false);
         arc(30, 200, 40, 50, 90, 60);
