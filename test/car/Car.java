@@ -1,10 +1,10 @@
-package test;
+package test.car;
 
 import java.awt.*;
 
 import static graphics.Graphics.*;
 
-public class Demo {
+public class Car {
     public static void main(String[] args) {
 
         createWindow("Demo");
