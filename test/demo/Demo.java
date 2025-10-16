@@ -1,7 +1,5 @@
 package test.demo;
 
-import java.awt.*;
-
 import static graphics.Graphics.*;
 
 public class Demo {
@@ -12,26 +10,26 @@ public class Demo {
         boolean running = true;
         int mx, my;
         int vert = 0, hori = 0;
-        int boxL = 50, boxT = 50, boxR = getScreenWidth() - 70, boxB = getScreenHeight() - 90;
+        int boxL = 50, boxT = 50, boxR = getScreenWidth() - 120, boxB = getScreenHeight() - 140;
 
-        Color colorCircle1 = Green;
-        Color colorBox = Blue;
+        int colorCircle1 = Green;
+        int colorBox = Blue;
 
         setFontSize(12);
-        setFontStyle(Font.BOLD);
+        setFontStyle(Bold);
         //setFilled(true);
         while (running) {
-            mx = getMousePos().x;
-            my = getMousePos().y;
+            mx = mousex();
+            my = mousey();
             //if (ismouse_button()) running = false;
 
-            if (isKey(VK_Q)) running = false;
+            if (iskey(KEY_Q)) running = false;
 
             // single handle
-            if (isKey(VK_LEFT)) vert-=6;
-            if (isKey(VK_RIGHT)) vert+=6;
-            if (isKey(VK_UP)) hori-=6;
-            if (isKey(VK_DOWN)) hori+=6;
+            if (iskey(KEY_LEFT)) vert-=6;
+            if (iskey(KEY_RIGHT)) vert+=6;
+            if (iskey(KEY_UP)) hori-=6;
+            if (iskey(KEY_DOWN)) hori+=6;
 
             if (boxL > (boxL + vert + 50) || boxT > (boxT + hori + 50) || (boxR + 50) < (boxL + vert + 50) || (boxB + 50) < (boxT + hori + 50)) {
                 colorCircle1 = Red;
@@ -63,16 +61,15 @@ public class Demo {
             circle((mx - (25 / 2)), (my - (25 / 2)), 25);
 
             setColor(White);
-            text("key: " + getKeyText(), 0, 0);
-            text("mouse: " + getMousePos().x + " , " + getMousePos().y, 0, 15);
+            text("key: " + getch(), 0, 0);
+            text("mouse: " + mousex() + " , " + mousey(), 0, 15);
             text("move: " + (100 + vert) + " , " + (100 + hori), 0, 15 * 2);
 
-            delay(60);
+            delay(16);
             clearWindow();
         }
         clearWindow();
         System.exit(0);
-        
-    }
 
+    }
 }
