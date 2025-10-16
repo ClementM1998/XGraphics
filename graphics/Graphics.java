@@ -33,7 +33,7 @@ public class Graphics {
 
     public static final int Plain = Font.PLAIN;
     public static final int Bold = Font.BOLD;
-    public static final int ITALIC = Font.ITALIC;
+    public static final int Italic = Font.ITALIC;
     public static final int RomanBaseline = Font.ROMAN_BASELINE;
     public static final int CenterBaseline = Font.CENTER_BASELINE;
     public static final int HangingBaseline = Font.HANGING_BASELINE;
@@ -372,7 +372,7 @@ public class Graphics {
         int blue = color & 0xFF;
 
         if (alpha == 0x00) alpha = 0xFF;
-        
+
         graphics.setColor(new Color(red, green, blue, alpha));
     }
 
