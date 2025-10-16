@@ -1,7 +1,5 @@
 package test.graph;
 
-import java.awt.*;
-
 import static graphics.Graphics.*;
 
 public class Graph {
@@ -9,9 +7,9 @@ public class Graph {
 
         createWindow("Demo");
 
-        setBackColor(Color.white);
+        setBackColor(White);
 
-        setColor(Color.red);
+        setColor(Red);
 
         text("Hello", 40, 40);
 
@@ -29,7 +27,7 @@ public class Graph {
 
         setFilled(true);
         arc(30, 130, 40, 50, 180, 40);
-        
+
     }
 
 }
