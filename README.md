@@ -1,3 +1,5 @@
 # XGraphics
 
-This is a simple program written in Java.
+Ini adalah program sederhana yang di tulis dengan bahasa Java.
+
+
