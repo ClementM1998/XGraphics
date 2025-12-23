@@ -18,8 +18,6 @@ public class Graphics {
     private static int height = screenHeight;
     private static int posx = 0;
     private static int posy = 0;
-    //private static Color color = Color.white;
-    //private static Color backColor = Color.black;
     private static int color = Graphics.White;
     private static int backColor = Graphics.Black;
     private static boolean filled = false;
@@ -40,20 +38,6 @@ public class Graphics {
 
     private static Drawing drawing;
     private static Graphics2D graphics;
-
-    //public static final Color White = Color.white;
-    //public static final Color LightGray = Color.lightGray;
-    //public static final Color Gray = Color.gray;
-    //public static final Color DarkGray = Color.darkGray;
-    //public static final Color Black = Color.black;
-    //public static final Color Red = Color.red;
-    //public static final Color Pink = Color.pink;
-    //public static final Color Orange = Color.orange;
-    //public static final Color Yellow = Color.yellow;
-    //public static final Color Green = Color.green;
-    //public static final Color Magenta = Color.magenta;
-    //public static final Color Cyan = Color.cyan;
-    //public static final Color Blue = Color.blue;
 
     public static final int White     = 0xFFFFFFFF; // (255, 255, 255)
     public static final int LightGray = 0xFFCCCCCC; // (204, 204, 204)
@@ -258,7 +242,6 @@ public class Graphics {
 
     private static void initWindow() {
         window.setTitle(title);
-        //window.setSize(width, height);
         window.setLocation(posx, posy);
         window.setResizable(false);
 
@@ -425,7 +408,6 @@ public class Graphics {
     public static void arc(int x, int y, int width, int height, int startangle, int sweepangle) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         if (Graphics.filled) {
             graphics.fillArc(x, y, width, height, startangle, sweepangle);
         } else {
@@ -437,7 +419,6 @@ public class Graphics {
     public static void circle(int x, int y, int radius) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         if (Graphics.filled) {
             graphics.fillOval(x, y, radius, radius);
         } else {
@@ -449,7 +430,6 @@ public class Graphics {
     public static void point(int x, int y) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         graphics.drawLine(x, y, x, y);
         window.repaint();
     }
@@ -457,7 +437,6 @@ public class Graphics {
     public static void line(int x1, int y1, int x2, int y2) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         graphics.drawLine(x1, y1, x2, y2);
         window.repaint();
     }
@@ -465,14 +444,11 @@ public class Graphics {
     public static void rectangle(int x, int y, int width, int height) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         int[] xpoint = new int[] {x, width, width, x, x};
         int[] ypoint = new int[] {y, y, height, height, y};
         if (Graphics.filled) {
-            //polygon(xpoint, ypoint);
             graphics.fillRect(x, y, width, height);
         } else {
-            //polyline(xpoint, ypoint);
             graphics.drawRect(x, y, width, height);
         }
         window.repaint();
@@ -494,7 +470,6 @@ public class Graphics {
     public static void ellipse(int x, int y, int width, int height) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         if (Graphics.filled) {
             graphics.fillOval(x, y, width, height);
         } else {
@@ -505,7 +480,6 @@ public class Graphics {
     public static void square(int x, int y, int size) {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         if (Graphics.filled) {
             graphics.fillRect(x, y, size, size);
         } else {
@@ -519,7 +493,6 @@ public class Graphics {
         graphics.setStroke(new BasicStroke(stroke));
         if (xpoints.length != ypoints.length) throw new IndexOutOfBoundsException("x point and y point must have a same size");
         int npoint = xpoints.length;
-        //graphics.setColor(color);
         if (Graphics.filled) {
             graphics.fillPolygon(xpoints, ypoints, npoint);
         } else {
@@ -533,7 +506,6 @@ public class Graphics {
         graphics.setStroke(new BasicStroke(stroke));
         if (xpoints.length != ypoints.length) throw new IndexOutOfBoundsException("x point and y point must have a same size");
         int npoint = xpoints.length;
-        //graphics.setColor(color);
         graphics.drawPolyline(xpoints, ypoints, npoint);
         window.repaint();
     }
@@ -543,7 +515,6 @@ public class Graphics {
         graphics.setStroke(new BasicStroke(stroke));
         Font font = new Font(fontName, fontStyle, fontSize);
         graphics.setFont(font);
-        //graphics.setColor(color);
 
         FontMetrics fm = graphics.getFontMetrics();
         graphics.drawString(text, x, (y + fm.getAscent()));
@@ -555,7 +526,6 @@ public class Graphics {
         graphics.setStroke(new BasicStroke(stroke));
         Font font = new Font(fontName, fontStyle, fontSize);
         graphics.setFont(font);
-        //graphics.setColor(color);
 
         FontMetrics fm = graphics.getFontMetrics();
         //graphics.drawString(text, x (y + fm.getAscent()));
@@ -660,7 +630,6 @@ public class Graphics {
     public static void drawPath() {
         graphics.setRenderingHints(getRendering(antialias));
         graphics.setStroke(new BasicStroke(stroke));
-        //graphics.setColor(color);
         graphics.draw(path);
         window.repaint();
     }
